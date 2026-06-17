@@ -22,6 +22,7 @@ fixtures = [
     "Custom DocPerm",
     "Server Script",
     "Observation Template",
+    "Notification",
     {
         "dt": "DocType",
         "filters": [["module", "=", "Healthcare"]]
