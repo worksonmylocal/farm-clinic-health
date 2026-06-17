@@ -21,6 +21,7 @@ fixtures = [
     "Workflow Action Master",
     "Custom DocPerm",
     "Server Script",
+    "Observation Template",
     {
         "dt": "DocType",
         "filters": [["module", "=", "Healthcare"]]
