@@ -25,7 +25,12 @@ fixtures = [
     "Notification",
     {
         "dt": "DocType",
-        "filters": [["module", "=", "Healthcare"]]
+        "filters": [["name", "in", [
+            "Occupational Exposure Log",
+            "Work Related Injury Form",
+            "Referral Tracking",
+            "Wellness Programme Tracker"
+        ]]]
     },
 ]
 
