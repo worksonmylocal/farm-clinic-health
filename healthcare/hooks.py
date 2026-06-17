@@ -19,6 +19,8 @@ fixtures = [
     "Workflow",
     "Workflow State",
     "Workflow Action Master",
+    "Custom DocPerm",
+    "Server Script",
     {
         "dt": "DocType",
         "filters": [["module", "=", "Healthcare"]]
@@ -141,9 +143,13 @@ doc_events = {
 		"on_trash": "healthcare.healthcare.utils.company_on_trash",
 	},
 	"Patient": {
-		"after_insert": "healthcare.regional.india.abdm.utils.set_consent_attachment_details"
+		"after_insert": "healthcare.regional.india.abdm.utils.set_consent_attachment_details",
+	},
+	"Patient Encounter": {
+		"after_save": "healthcare.farm_clinic_hooks.auto_create_leave_application",
 	},
 }
+
 
 scheduler_events = {
 	"all": [

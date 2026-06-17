@@ -1,0 +1,21 @@
+[
+ {
+  "allow_guest": 0,
+  "api_method": null,
+  "cron_format": null,
+  "disabled": 1,
+  "docstatus": 0,
+  "doctype": "Server Script",
+  "doctype_event": "Before Save",
+  "enable_rate_limit": 0,
+  "event_frequency": "All",
+  "modified": "2026-06-17 13:44:53.369977",
+  "module": null,
+  "name": "Auto Create Leave Application on Medical Certificate",
+  "rate_limit_count": 5,
+  "rate_limit_seconds": 86400,
+  "reference_doctype": "Patient Encounter",
+  "script": "if doc.custom_medical_certificate_issued and doc.custom_certificate_valid_from and doc.custom_certificate_valid_to:\n    \n    patient = frappe.get_doc(\"Patient\", doc.patient)\n    \n    if not patient.custom_employee_id:\n        frappe.msgprint(\"Patient has no Employee ID linked. Leave Application not created.\")\n    else:\n        existing = frappe.db.exists(\"Leave Application\", {\n            \"employee\": patient.custom_employee_id,\n            \"from_date\": doc.custom_certificate_valid_from,\n            \"to_date\": doc.custom_certificate_valid_to,\n        })\n        \n        if existing:\n            frappe.msgprint(\"Leave Application already exists for this period.\")\n        else:\n            # Check if leave allocation exists\n            allocation = frappe.db.exists(\"Leave Allocation\", {\n                \"employee\": patient.custom_employee_id,\n                \"leave_type\": \"Sick Leave\",\n                \"from_date\": [\"<=\", doc.custom_certificate_valid_from],\n                \"to_date\": [\">=\", doc.custom_certificate_valid_to],\n                \"docstatus\": 1\n            })\n            \n            if not allocation:\n                frappe.msgprint(\n                    f\"No Sick Leave allocation found for {patient.custom_employee_id}. \"\n                    \"Please ask HR to allocate Sick Leave for this employee before issuing a certificate.\",\n                    alert=True\n                )\n            else:\n                try:\n                    leave_app = frappe.new_doc(\"Leave Application\")\n                    leave_app.employee = patient.custom_employee_id\n                    leave_app.leave_type = \"Sick Leave\"\n                    leave_app.from_date = doc.custom_certificate_valid_from\n                    leave_app.to_date = doc.custom_certificate_valid_to\n                    leave_app.description = f\"Auto-created from Patient Encounter {doc.name} - Medical Certificate Issued\"\n                    leave_app.status = \"Open\"\n                    leave_app.insert(ignore_permissions=True)\n                    frappe.msgprint(\n                        f\"Leave Application {leave_app.name} created successfully for {patient.custom_employee_id}\",\n                        alert=True\n                    )\n                except Exception as e:\n                    frappe.log_error(message=str(e), title=\"Leave Application Auto-Creation Failed\")\n                    frappe.msgprint(f\"Could not create Leave Application: {str(e)}\")",
+  "script_type": "DocType Event"
+ }
+]
