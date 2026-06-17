@@ -8,6 +8,23 @@ app_icon = "octicon octicon-file-directory"
 app_color = "grey"
 app_email = "info@earthianslive.com"
 app_license = "GNU GPL V3"
+
+# Fixtures
+# --------
+fixtures = [
+    "Role",
+    "Item Group",
+    "Custom Field",
+    "Property Setter",
+    "Workflow",
+    "Workflow State",
+    "Workflow Action Master",
+    {
+        "dt": "DocType",
+        "filters": [["module", "=", "Healthcare"]]
+    },
+]
+
 required_apps = ["frappe/erpnext"]
 
 # Includes in <head>
