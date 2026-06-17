@@ -1,0 +1,163 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "naming_series: REF-.YYYY.-",
+ "creation": "2026-06-17 11:23:20.288702",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "section_break_dfeu",
+  "amended_from",
+  "worker",
+  "employee_id",
+  "department",
+  "referral_date",
+  "referring_clinician",
+  "external_facility",
+  "reason_for_referral",
+  "referral_status",
+  "follow_up_date",
+  "attended_date",
+  "outcome_notes",
+  "discharge_summary",
+  "recorded_by"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_dfeu",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Referral Tracking",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Naming Series",
+   "options": "REF-.YYYY.-"
+  },
+  {
+   "fieldname": "worker",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Worker",
+   "options": "Patient",
+   "reqd": 1
+  },
+  {
+   "fieldname": "employee_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Employee ID",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Department",
+   "options": "Department",
+   "reqd": 1
+  },
+  {
+   "fieldname": "referral_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Referral Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "referring_clinician",
+   "fieldtype": "Link",
+   "label": "Referring Clinician",
+   "options": "Healthcare Practitioner",
+   "reqd": 1
+  },
+  {
+   "fieldname": "external_facility",
+   "fieldtype": "Data",
+   "label": "External Facility",
+   "reqd": 1
+  },
+  {
+   "fieldname": "reason_for_referral",
+   "fieldtype": "Small Text",
+   "label": "Reason For Referral",
+   "reqd": 1
+  },
+  {
+   "fieldname": "referral_status",
+   "fieldtype": "Select",
+   "label": "Referral Status",
+   "options": "Pending\nAttended\nClosed\nCancelled",
+   "reqd": 1
+  },
+  {
+   "fieldname": "follow_up_date",
+   "fieldtype": "Date",
+   "label": "Follow Up Date"
+  },
+  {
+   "fieldname": "attended_date",
+   "fieldtype": "Date",
+   "label": "Attended Date"
+  },
+  {
+   "fieldname": "outcome_notes",
+   "fieldtype": "Small Text",
+   "label": "Outcome Notes"
+  },
+  {
+   "fieldname": "discharge_summary",
+   "fieldtype": "Attach",
+   "label": "Discharge Summary"
+  },
+  {
+   "fieldname": "recorded_by",
+   "fieldtype": "Link",
+   "label": "Recorded By",
+   "options": "User"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-06-17 11:33:40.103720",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Referral Tracking",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
