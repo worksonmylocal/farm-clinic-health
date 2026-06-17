@@ -1,63 +1,250 @@
-<div align="center">
-<a href="https://frappehealth.com">
-    <img src="https://raw.githubusercontent.com/frappe/healthcare/develop/healthcare/public/images/healthcare.svg" height="128" alt="Marley Health Logo">
-  </a>
-  <h2>Marley Health</h2>
-  <p align="center">
-    <p>Open source & easy-to-use hospital information system(HIS) for all healthcare organisations.</p>
-  </p>
+# Farm Clinic Health Module
 
-  [Marley Health](https://frappehealth.com/home)
+A customized ERPNext Healthcare module for farm clinic management, built on 
+top of [Frappe Health](https://github.com/frappe/health).
 
- <div align="center" style="max-height: 40px;">
-    <a href="https://frappecloud.com/marley/signup">
-        <img src=".github/try-on-f-cloud-button.svg" height="40">
-    </a>
- </div>
+Designed for flower farms and agricultural operations with on-site clinics,
+this module extends ERPNext Healthcare with occupational health tracking,
+farm-specific workflows, and HR integration.
 
-</div>
+---
 
-### Introduction
+## What This Module Provides
 
-Marley Health enables the health domain in ERPNext and has various features that will help healthcare practitioners, clinics and hospitals to leverage the power of Frappe and ERPNext. It is built on Frappe, a full-stack, meta-data driven, web framework, and integrates seamlessly with ERPNext, the most agile ERP software. Marley Health helps to manage healthcare workflows efficiently and most of the design is based on HL7 FHIR (Fast Health Interoperability Resources).
+### Custom Doctypes
+- **Occupational Exposure Log** — Record pesticide/chemical exposure incidents
+- **Work Related Injury Form** — Structured injury capture with cause classification
+- **Referral Tracking** — Track worker referrals to external facilities
+- **Wellness Programme Tracker** — Record participation in farm wellness activities
 
+### Custom Fields
+- **Patient** — Employee ID (linked to HR), Farm Department, Employment Type
+- **Patient Encounter** — Is Work Related, Referred From Department, 
+  Medical Certificate Issued, Certificate Valid From/To
 
-### Key Features
+### Workflows
+- **Clinic Patient Encounter Flow** — Draft → In Progress → Awaiting Lab 
+  Results → Awaiting Pharmacy → Closed
 
-![Key Features](https://raw.githubusercontent.com/frappe/health/develop/key-features.png)
+### Automated Notifications
+- Doctor notified when new appointment is created
+- Lab Technician notified when lab test is requested
+- Doctor notified when lab results are ready
+- Pharmacist notified when prescription is ready
+- Clinic In-Charge notified when patient is referred
+- HR Manager notified when medical certificate is issued
 
-Key feature sets include Patient management, Outpatient / Inpatient management, Clinical Procedures, Rehabilitation and Physiotherapy, Laboratory management etc. and supports configuring multiple Medical Code Standards. It allows mapping any healthcare facility as Service Units and specialities as Medical Departments.
+### HR Integration
+- Medical certificate issuance automatically creates a Leave Application
+- Sick leave linked directly to patient encounter
 
-By integrating with ERPNext, features of ERPNext can also be utilized to manage Pharmacy and supplies, Purchases, Human Resources, Accounts and Finance, Asset Management, Quality etc. Along with authentication and role based access permissions, RESTfullness, extensibility, responsiveness and other goodies, the framework also allows setting up Website, payment integration and Patient portal.
+### Roles
+- Clinic Receptionist
+- Clinical Officer
+- Pharmacist
+- Lab Technician
+- Clinic In-Charge
+- Farm Director
 
+### Item Groups
+- Medical Supplies
+  - Medicines & Drugs
+  - Dressings & Consumables
+  - Lab Supplies
+  - PPE & Safety
 
-### Installation
+---
 
-Using bench, [install ERPNext](https://github.com/frappe/bench#installation) as mentioned here.
+## Requirements
 
-Once ERPNext is installed, add health app to your bench by running
+- ERPNext v15
+- HRMS v15
+- Frappe v15
 
-```sh
-$ bench get-app healthcare
+---
+
+## Installation
+
+### Step 1 — Get the app
+```bash
+bench get-app healthcare https://github.com/worksonmylocal/farm-clinic-health --branch version-15
 ```
 
-After that, you can install health app on required site by running
-
-```sh
-$ bench --site demo.com install-app healthcare
+### Step 2 — Install on your site
+```bash
+bench --site your-site-name install-app healthcare
+bench --site your-site-name migrate
+bench restart
 ```
 
+---
 
-### Documentation
+## Post Installation Setup
 
-Complete documentation for Marley Health is available at https://frappehealth.com/docs
+These steps must be done manually after installation as they are farm-specific:
 
+### 1. Company Setup
+- Go to **Company** and set up your farm company details
 
-### License
+### 2. Create Departments
+- Go to **Department** and create your farm sections
+- Examples: Greenhouse A, Packing, Cold Room, Irrigation, Administration
 
-GNU GPL V3. See [license.txt](https://github.com/earthians/marley/blob/develop/license.txt) for more information.
+### 3. Create Employees
+- Go to **Employee** and import or create all farm worker records
+- Ensure each employee has **Employment Type** and **Department** filled
 
+### 4. Create Healthcare Practitioners
+- Go to **Healthcare Practitioner** and create records for all clinic staff
+- Link each practitioner to their User account
+- Add a Practitioner Schedule for appointment booking
 
-### Credits
+### 5. Create Users and Assign Roles
+Create a user for each clinic staff member and assign the appropriate role:
 
-Marley Health module is developed & maintained by Earthians and community contributors.
+| Staff | Role |
+|---|---|
+| Doctor / Clinical Officer | Clinical Officer |
+| Nurse | Nursing User + Clinic Receptionist |
+| Pharmacist | Pharmacist |
+| Lab Technician | Lab Technician |
+| Clinic In-Charge | Clinic In-Charge |
+| HR Manager | HR Manager |
+| Farm Director | Farm Director |
+
+### 6. Leave Allocation
+- Go to **Leave Allocation** and allocate **Sick Leave** for all employees
+- This is required for the medical certificate → leave application automation to work
+
+### 7. Drug Formulary
+- Go to **Item** and create all medicines stocked in the clinic
+- Set **Item Group** to `Medicines & Drugs` for all medicines
+- Set **Item Group** to `Dressings & Consumables` for dressings and supplies
+
+### 8. Medical Certificate → Leave Application (Server Script)
+The automatic leave application creation requires a Server Script.
+Go to **Server Script → New** and create:
+
+- **Script Name:** `Auto Create Leave Application on Medical Certificate`
+- **Script Type:** `DocType Event`
+- **Reference Document Type:** `Patient Encounter`
+- **DocType Event:** `After Save`
+- **Enabled:** ✅
+
+Paste the following script:
+
+```python
+if doc.custom_medical_certificate_issued and doc.custom_certificate_valid_from \
+        and doc.custom_certificate_valid_to:
+
+    patient = frappe.get_doc("Patient", doc.patient)
+
+    if not patient.custom_employee_id:
+        frappe.msgprint("Patient has no Employee ID linked.", alert=True)
+    else:
+        existing = frappe.db.exists("Leave Application", {
+            "employee": patient.custom_employee_id,
+            "from_date": doc.custom_certificate_valid_from,
+            "to_date": doc.custom_certificate_valid_to,
+        })
+
+        if not existing:
+            allocation = frappe.db.exists("Leave Allocation", {
+                "employee": patient.custom_employee_id,
+                "leave_type": "Sick Leave",
+                "from_date": ["<=", doc.custom_certificate_valid_from],
+                "to_date": [">=", doc.custom_certificate_valid_to],
+                "docstatus": 1
+            })
+
+            if not allocation:
+                frappe.msgprint(
+                    f"No Sick Leave allocation found for \
+                    {patient.custom_employee_id}.",
+                    alert=True
+                )
+            else:
+                leave_app = frappe.new_doc("Leave Application")
+                leave_app.employee = patient.custom_employee_id
+                leave_app.leave_type = "Sick Leave"
+                leave_app.from_date = doc.custom_certificate_valid_from
+                leave_app.to_date = doc.custom_certificate_valid_to
+                leave_app.description = f"Auto-created from {doc.name}"
+                leave_app.status = "Open"
+                leave_app.insert(ignore_permissions=True)
+                frappe.msgprint(
+                    f"Leave Application {leave_app.name} created.",
+                    alert=True
+                )
+```
+
+### 9. Enable Server Scripts
+```bash
+bench --site your-site-name set-config server_script_enabled true
+bench --site your-site-name clear-cache
+```
+
+---
+
+## Patient Journey
+
+Worker Arrives
+
+↓
+
+Nurse creates appointment + records vitals
+
+↓
+
+Doctor receives notification → opens Patient Encounter
+
+↓
+
+Doctor fills symptoms, diagnosis, prescription, investigations
+
+↓
+
+[Lab Required?]
+
+Yes → Request Lab Test → Lab Tech notified → enters results
+
+→ Doctor notified → reviews results → updates prescription
+
+No  → Close Without Lab
+
+↓
+
+Send to Pharmacy → Pharmacist notified → dispenses medication
+
+↓
+
+Encounter Closed
+
+↓
+
+[Referral Needed?]
+
+Yes → Create Referral Tracking → Clinic In-Charge notified
+
+No  → Done
+
+↓
+
+[Medical Certificate Issued?]
+
+Yes → Leave Application auto-created → HR Manager notified
+
+---
+
+## Known Limitations
+
+- Observation records must be created manually by the Lab Technician 
+  and linked to the Patient Encounter
+- Drug dispensing stock deduction requires manual stock entry setup
+- Email notifications require email configuration per farm
+
+---
+
+## Support
+
+For issues and customization requests, open an issue on this repository.
