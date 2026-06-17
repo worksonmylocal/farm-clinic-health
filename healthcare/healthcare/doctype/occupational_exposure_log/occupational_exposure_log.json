@@ -1,0 +1,170 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "naming_series:OEL-.YYYY.-",
+ "creation": "2026-06-17 10:38:58.386109",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "section_break_tejn",
+  "amended_from",
+  "worker",
+  "employee_id",
+  "department",
+  "date_of_exposure",
+  "chemical_pesticide_name",
+  "exposure_type",
+  "ppe_worn",
+  "ppe_details",
+  "severity",
+  "symptoms_reported",
+  "action_taken",
+  "follow_up_required",
+  "follow_up_date",
+  "recorded_by"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_tejn",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Occupational Exposure Log",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "worker",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Worker",
+   "options": "Patient",
+   "reqd": 1
+  },
+  {
+   "fieldname": "employee_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Employee ID",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Department",
+   "options": "Department",
+   "reqd": 1
+  },
+  {
+   "fieldname": "date_of_exposure",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Date of Exposure",
+   "reqd": 1
+  },
+  {
+   "fieldname": "chemical_pesticide_name",
+   "fieldtype": "Data",
+   "label": "Chemical Pesticide Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "exposure_type",
+   "fieldtype": "Select",
+   "label": "Exposure Type",
+   "options": "Inhalation\nSkin Contact\nEye Contact\nIngestion\nMultiple",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "ppe_worn",
+   "fieldtype": "Check",
+   "label": "PPE Worn"
+  },
+  {
+   "fieldname": "ppe_details",
+   "fieldtype": "Small Text",
+   "label": "PPE Details"
+  },
+  {
+   "fieldname": "severity",
+   "fieldtype": "Select",
+   "label": "Severity",
+   "options": "Mild\nModerate\nSevere",
+   "reqd": 1
+  },
+  {
+   "fieldname": "symptoms_reported",
+   "fieldtype": "Small Text",
+   "label": "Symptoms Reported"
+  },
+  {
+   "fieldname": "action_taken",
+   "fieldtype": "Small Text",
+   "label": "Action Taken"
+  },
+  {
+   "default": "0",
+   "fieldname": "follow_up_required",
+   "fieldtype": "Check",
+   "label": "Follow Up Required"
+  },
+  {
+   "fieldname": "follow_up_date",
+   "fieldtype": "Date",
+   "label": "Follow Up Date"
+  },
+  {
+   "fieldname": "recorded_by",
+   "fieldtype": "Link",
+   "label": "Recorded By",
+   "options": "User"
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Seried",
+   "options": "OEL-.YYYY.-"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-06-17 10:54:12.659495",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Occupational Exposure Log",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
