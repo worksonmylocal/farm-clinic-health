@@ -29,7 +29,7 @@ fixtures = [
             "Occupational Exposure Log",
             "Work Related Injury Form",
             "Referral Tracking",
-            "Wellness Programme Tracker"
+            "Wellness Program Tracker"
         ]]]
     },
 ]
