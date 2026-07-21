@@ -30,24 +30,6 @@
   "docstatus": 0,
   "doctype": "Workflow State",
   "icon": "",
-  "modified": "2026-06-17 12:33:15.430128",
-  "name": "Awaiting Pharmacy",
-  "style": "",
-  "workflow_state_name": "Awaiting Pharmacy"
- },
- {
-  "docstatus": 0,
-  "doctype": "Workflow State",
-  "icon": "",
-  "modified": "2026-06-17 12:33:22.187694",
-  "name": "Closed",
-  "style": "",
-  "workflow_state_name": "Closed"
- },
- {
-  "docstatus": 0,
-  "doctype": "Workflow State",
-  "icon": "",
   "modified": "2026-06-17 12:32:53.470417",
   "name": "In Progress",
   "style": "",
@@ -61,6 +43,24 @@
   "name": "Awaiting Lab Results",
   "style": "",
   "workflow_state_name": "Awaiting Lab Results"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "",
+  "modified": "2026-06-17 12:33:15.430128",
+  "name": "Awaiting Pharmacy",
+  "style": "",
+  "workflow_state_name": "Awaiting Pharmacy"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "",
+  "modified": "2026-06-17 12:33:22.187694",
+  "name": "Closed",
+  "style": "",
+  "workflow_state_name": "Closed"
  },
  {
   "docstatus": 0,

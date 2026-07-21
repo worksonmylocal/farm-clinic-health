@@ -5,5 +5,5 @@
 from frappe.model.document import Document
 
 
-class WorkRelatedInjuryForm(Document):
+class TimaflorPatient(Document):
 	pass
