@@ -1,0 +1,183 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:EXR-.YYYY.-",
+ "creation": "2026-07-21 12:00:08.112856",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "section_break_9wlv",
+  "amended_from",
+  "patient",
+  "employee_umber",
+  "department",
+  "date_of_referral",
+  "referring_doctor",
+  "sb_referral_details",
+  "facility_referred_to",
+  "reason_for_referral",
+  "referral_type",
+  "sb_follow_up",
+  "follow_up_date",
+  "patient_returned",
+  "return_date",
+  "outcome_notes",
+  "sb_attachments",
+  "lab_results_attachment",
+  "referral_letter"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_9wlv",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "External Referral",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "EXR-.YYYY.-"
+  },
+  {
+   "fieldname": "patient",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Patient",
+   "options": "Timaflor Patient",
+   "reqd": 1
+  },
+  {
+   "fieldname": "employee_umber",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Employee Number",
+   "reqd": 1
+  },
+  {
+   "fieldname": "department",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Department",
+   "options": "Greenhouse\nPackhouse\nWorkshop\nOffice\nOutside\nOther",
+   "reqd": 1
+  },
+  {
+   "fieldname": "date_of_referral",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Date Of Referral",
+   "reqd": 1
+  },
+  {
+   "fieldname": "referring_doctor",
+   "fieldtype": "Data",
+   "label": "Referring Doctor",
+   "reqd": 1
+  },
+  {
+   "fieldname": "sb_referral_details",
+   "fieldtype": "Section Break",
+   "label": "Referral Details"
+  },
+  {
+   "fieldname": "facility_referred_to",
+   "fieldtype": "Data",
+   "label": "Facility Referred To",
+   "reqd": 1
+  },
+  {
+   "fieldname": "reason_for_referral",
+   "fieldtype": "Small Text",
+   "label": "Reason For Referral",
+   "reqd": 1
+  },
+  {
+   "fieldname": "referral_type",
+   "fieldtype": "Select",
+   "label": "Referral Type",
+   "options": "Lab Tests\nSpecialist\nInpatient\nOther",
+   "reqd": 1
+  },
+  {
+   "fieldname": "sb_follow_up",
+   "fieldtype": "Section Break",
+   "label": "Follow Up"
+  },
+  {
+   "fieldname": "follow_up_date",
+   "fieldtype": "Date",
+   "label": "Follow Up Date"
+  },
+  {
+   "default": "0",
+   "fieldname": "patient_returned",
+   "fieldtype": "Check",
+   "label": "Patient Returned"
+  },
+  {
+   "fieldname": "return_date",
+   "fieldtype": "Date",
+   "label": "Return Date"
+  },
+  {
+   "fieldname": "outcome_notes",
+   "fieldtype": "Small Text",
+   "label": "Outcome Notes"
+  },
+  {
+   "fieldname": "sb_attachments",
+   "fieldtype": "Section Break",
+   "label": "Attachments"
+  },
+  {
+   "fieldname": "lab_results_attachment",
+   "fieldtype": "Attach",
+   "label": "Lab Results Attachment"
+  },
+  {
+   "fieldname": "referral_letter",
+   "fieldtype": "Attach",
+   "label": "Referral Letter"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-07-21 12:09:53.445565",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "External Referral",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
