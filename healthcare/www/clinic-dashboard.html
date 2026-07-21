@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clinic Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f4f8; color: #2d3748; }
+  .header { background: linear-gradient(135deg, #1a7f64 0%, #0d5c46 100%); color: white; padding: 24px 32px; display: flex; justify-content: space-between; align-items: center; }
+  .header h1 { font-size: 24px; font-weight: 600; }
+  .header .subtitle { font-size: 14px; opacity: 0.8; margin-top: 4px; }
+  .header .date { font-size: 14px; opacity: 0.9; text-align: right; }
+  .quick-links { background: white; padding: 16px 32px; display: flex; gap: 12px; flex-wrap: wrap; border-bottom: 1px solid #e2e8f0; }
+  .quick-link { background: #1a7f64; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; text-decoration: none; display: inline-block; transition: background 0.2s; }
+  .quick-link:hover { background: #0d5c46; }
+  .quick-link.secondary { background: #e2e8f0; color: #4a5568; }
+  .quick-link.secondary:hover { background: #cbd5e0; }
+  .container { padding: 24px 32px; max-width: 1400px; }
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .stat-card { background: white; border-radius: 12px; padding: 20px 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border-left: 4px solid; }
+  .stat-card.green { border-color: #1a7f64; }
+  .stat-card.blue { border-color: #3182ce; }
+  .stat-card.orange { border-color: #dd6b20; }
+  .stat-card.purple { border-color: #805ad5; }
+  .stat-card .label { font-size: 13px; color: #718096; font-weight: 500; margin-bottom: 8px; }
+  .stat-card .value { font-size: 32px; font-weight: 700; color: #2d3748; }
+  .stat-card .sub { font-size: 12px; color: #a0aec0; margin-top: 4px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  .card { background: white; border-radius: 12px; padding: 20px 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .card-title { font-size: 15px; font-weight: 600; color: #2d3748; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+  .card-title .badge { font-size: 11px; background: #ebf8ff; color: #2b6cb0; padding: 2px 8px; border-radius: 20px; font-weight: 500; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; padding: 8px 12px; background: #f7fafc; color: #718096; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e2e8f0; }
+  td { padding: 10px 12px; border-bottom: 1px solid #f0f4f8; color: #4a5568; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #f7fafc; }
+  .badge-status { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .badge-status.pending { background: #fefcbf; color: #744210; }
+  .badge-status.approved { background: #c6f6d5; color: #22543d; }
+  .badge-status.draft { background: #e2e8f0; color: #4a5568; }
+  .badge-status.active { background: #bee3f8; color: #2a4365; }
+  .empty { text-align: center; padding: 32px; color: #a0aec0; font-size: 14px; }
+  .loading { text-align: center; padding: 32px; color: #a0aec0; }
+  .spinner { display: inline-block; width: 24px; height: 24px; border: 3px solid #e2e8f0; border-top-color: #1a7f64; border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  canvas { max-height: 200px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>🏥 Timaflor Clinic Dashboard</h1>
+    <div class="subtitle">Daily operational overview</div>
+  </div>
+  <div class="date" id="current-date"></div>
+</div>
+
+<div class="quick-links">
+  <span style="font-size:13px;color:#718096;align-self:center;font-weight:500;">Quick Actions:</span>
+  <a class="quick-link" href="/app/timaflor-patient/new-timaflor-patient-1">+ New Patient</a>
+  <a class="quick-link" href="/app/timaflor-patient-encounter/new-timaflor-patient-encounter-1">+ New Encounter</a>
+  <a class="quick-link" href="/app/sick-off-application/new-sick-off-application-1">+ Sick Off</a>
+  <a class="quick-link" href="/app/external-referral/new-external-referral-1">+ Referral</a>
+  <a class="quick-link" href="/app/accident-injury-report/new-accident-injury-report-1">+ Accident Report</a>
+  <a class="quick-link secondary" href="/manager-dashboard">Manager Dashboard →</a>
+</div>
+
+<div class="container">
+
+  <div class="stats-grid">
+    <div class="stat-card green">
+      <div class="label">Patients Today</div>
+      <div class="value" id="today-count"><div class="spinner"></div></div>
+      <div class="sub">Encounters created today</div>
+    </div>
+    <div class="stat-card blue">
+      <div class="label">This Week</div>
+      <div class="value" id="week-count"><div class="spinner"></div></div>
+      <div class="sub">Patient encounters</div>
+    </div>
+    <div class="stat-card orange">
+      <div class="label">Pending Sick Off</div>
+      <div class="value" id="pending-sickoff"><div class="spinner"></div></div>
+      <div class="sub">Awaiting approval</div>
+    </div>
+    <div class="stat-card purple">
+      <div class="label">Active Referrals</div>
+      <div class="value" id="active-referrals"><div class="spinner"></div></div>
+      <div class="sub">Patients not yet returned</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Patients This Month by Department</div>
+      <canvas id="dept-chart"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title">This Week's Encounters</div>
+      <canvas id="week-chart"></canvas>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Recent Encounters <span class="badge">Last 10</span></div>
+      <div id="recent-encounters"><div class="loading"><div class="spinner"></div></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Pending Sick Off Applications</div>
+      <div id="pending-sickoff-list"><div class="loading"><div class="spinner"></div></div></div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Active Referrals</div>
+      <div id="active-referrals-list"><div class="loading"><div class="spinner"></div></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Recent Accident Reports</div>
+      <div id="recent-accidents"><div class="loading"><div class="spinner"></div></div></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const now = new Date();
+document.getElementById('current-date').innerHTML = now.toLocaleDateString('en-GB', {
+  weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+}) + '<br><span style="font-size:20px;font-weight:600;">' + now.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'}) + '</span>';
+
+const API = '/api/resource';
+
+async function fetchList(doctype, filters, fields, limit) {
+  const f = encodeURIComponent(JSON.stringify(filters || []));
+  const fld = encodeURIComponent(JSON.stringify(fields || ['name']));
+  const url = `${API}/${encodeURIComponent(doctype)}?filters=${f}&fields=${fld}&limit_page_length=${limit || 10}&order_by=creation desc`;
+  const res = await fetch(url, { headers: { 'X-Frappe-CSRF-Token': frappe.csrf_token } });
+  const data = await res.json();
+  return data.data || [];
+}
+
+const today = now.toISOString().split('T')[0];
+const weekAgo = new Date(now - 7*24*60*60*1000).toISOString().split('T')[0];
+const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+
+async function loadStats() {
+  try {
+    const todayEnc = await fetchList('Timaflor Patient Encounter', [['date','=',today]], ['name'], 500);
+    document.getElementById('today-count').textContent = todayEnc.length;
+    const weekEnc = await fetchList('Timaflor Patient Encounter', [['date','>=',weekAgo]], ['name'], 500);
+    document.getElementById('week-count').textContent = weekEnc.length;
+    const pendingSO = await fetchList('Sick Off Application', [['workflow_state','in',['Pending HR Review','Pending HOD Approval','Pending FM/GM Approval']]], ['name'], 500);
+    document.getElementById('pending-sickoff').textContent = pendingSO.length;
+    const activeRef = await fetchList('External Referral', [['patient_returned','=',0]], ['name'], 500);
+    document.getElementById('active-referrals').textContent = activeRef.length;
+  } catch(e) { console.error(e); }
+}
+
+async function loadDeptChart() {
+  try {
+    const data = await fetchList('Timaflor Patient Encounter', [['date','>=',monthStart]], ['department'], 500);
+    const counts = {};
+    data.forEach(d => { counts[d.department] = (counts[d.department] || 0) + 1; });
+    const labels = Object.keys(counts);
+    const values = Object.values(counts);
+    const colors = ['#1a7f64','#3182ce','#dd6b20','#805ad5','#e53e3e','#38a169'];
+    new Chart(document.getElementById('dept-chart'), {
+      type: 'doughnut',
+      data: { labels, datasets: [{ data: values, backgroundColor: colors.slice(0, labels.length), borderWidth: 2 }] },
+      options: { responsive: true, plugins: { legend: { position: 'right', labels: { font: { size: 11 } } } } }
+    });
+  } catch(e) { console.error(e); }
+}
+
+async function loadWeekChart() {
+  try {
+    const days = [];
+    const counts = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(now - i*24*60*60*1000);
+      const ds = d.toISOString().split('T')[0];
+      days.push(d.toLocaleDateString('en-GB', {weekday:'short', day:'numeric'}));
+      const enc = await fetchList('Timaflor Patient Encounter', [['date','=',ds]], ['name'], 500);
+      counts.push(enc.length);
+    }
+    new Chart(document.getElementById('week-chart'), {
+      type: 'bar',
+      data: { labels: days, datasets: [{ label: 'Patients', data: counts, backgroundColor: '#1a7f64', borderRadius: 6 }] },
+      options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+    });
+  } catch(e) { console.error(e); }
+}
+
+async function loadRecentEncounters() {
+  try {
+    const data = await fetchList('Timaflor Patient Encounter', [], ['name','patient','department','date','diagnosis'], 10);
+    if (!data.length) { document.getElementById('recent-encounters').innerHTML = '<div class="empty">No encounters found</div>'; return; }
+    let html = '<table><thead><tr><th>Patient</th><th>Department</th><th>Diagnosis</th><th>Date</th></tr></thead><tbody>';
+    data.forEach(d => {
+      html += `<tr><td>${d.patient||'-'}</td><td>${d.department||'-'}</td><td>${(d.diagnosis||'-').substring(0,30)}</td><td>${d.date||'-'}</td></tr>`;
+    });
+    html += '</tbody></table>';
+    document.getElementById('recent-encounters').innerHTML = html;
+  } catch(e) { document.getElementById('recent-encounters').innerHTML = '<div class="empty">Error loading data</div>'; }
+}
+
+async function loadPendingSickOff() {
+  try {
+    const data = await fetchList('Sick Off Application',
+      [['workflow_state','in',['Pending HR Review','Pending HOD Approval','Pending FM/GM Approval']]],
+      ['name','patient','department','workflow_state','sick_off_days_approved'], 10);
+    if (!data.length) { document.getElementById('pending-sickoff-list').innerHTML = '<div class="empty">No pending applications</div>'; return; }
+    let html = '<table><thead><tr><th>Patient</th><th>Department</th><th>Days</th><th>Status</th></tr></thead><tbody>';
+    data.forEach(d => {
+      html += `<tr><td><a href="/app/sick-off-application/${d.name}">${d.patient||'-'}</a></td><td>${d.department||'-'}</td><td>${d.sick_off_days_approved||'-'}</td><td><span class="badge-status pending">${d.workflow_state||''}</span></td></tr>`;
+    });
+    html += '</tbody></table>';
+    document.getElementById('pending-sickoff-list').innerHTML = html;
+  } catch(e) { document.getElementById('pending-sickoff-list').innerHTML = '<div class="empty">Error loading data</div>'; }
+}
+
+async function loadActiveReferrals() {
+  try {
+    const data = await fetchList('External Referral',
+      [['patient_returned','=',0]],
+      ['name','patient','facility_referred_to','referral_type','date_of_referral'], 10);
+    if (!data.length) { document.getElementById('active-referrals-list').innerHTML = '<div class="empty">No active referrals</div>'; return; }
+    let html = '<table><thead><tr><th>Patient</th><th>Facility</th><th>Type</th><th>Date</th></tr></thead><tbody>';
+    data.forEach(d => {
+      html += `<tr><td><a href="/app/external-referral/${d.name}">${d.patient||'-'}</a></td><td>${d.facility_referred_to||'-'}</td><td><span class="badge-status active">${d.referral_type||'-'}</span></td><td>${d.date_of_referral||'-'}</td></tr>`;
+    });
+    html += '</tbody></table>';
+    document.getElementById('active-referrals-list').innerHTML = html;
+  } catch(e) { document.getElementById('active-referrals-list').innerHTML = '<div class="empty">Error loading data</div>'; }
+}
+
+async function loadRecentAccidents() {
+  try {
+    const data = await fetchList('Accident Injury Report', [],
+      ['name','patient','department','nature_of_accident','date_of_accident'], 10);
+    if (!data.length) { document.getElementById('recent-accidents').innerHTML = '<div class="empty">No accident reports found</div>'; return; }
+    let html = '<table><thead><tr><th>Patient</th><th>Department</th><th>Nature</th><th>Date</th></tr></thead><tbody>';
+    data.forEach(d => {
+      const cls = d.nature_of_accident === 'Fatal' ? 'pending' : d.nature_of_accident === 'Disabling' ? 'active' : 'approved';
+      html += `<tr><td><a href="/app/accident-injury-report/${d.name}">${d.patient||'-'}</a></td><td>${d.department||'-'}</td><td><span class="badge-status ${cls}">${d.nature_of_accident||'-'}</span></td><td>${d.date_of_accident||'-'}</td></tr>`;
+    });
+    html += '</tbody></table>';
+    document.getElementById('recent-accidents').innerHTML = html;
+  } catch(e) { document.getElementById('recent-accidents').innerHTML = '<div class="empty">Error loading data</div>'; }
+}
+
+loadStats();
+loadDeptChart();
+loadWeekChart();
+loadRecentEncounters();
+loadPendingSickOff();
+loadActiveReferrals();
+loadRecentAccidents();
+</script>
+</body>
+</html>

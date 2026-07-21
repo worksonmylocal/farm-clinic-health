@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manager Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f4f8; color: #2d3748; }
+  .header { background: linear-gradient(135deg, #2b4c8c 0%, #1a3264 100%); color: white; padding: 24px 32px; display: flex; justify-content: space-between; align-items: center; }
+  .header h1 { font-size: 24px; font-weight: 600; }
+  .header .subtitle { font-size: 14px; opacity: 0.8; margin-top: 4px; }
+  .nav { background: white; padding: 12px 32px; display: flex; gap: 12px; align-items: center; border-bottom: 1px solid #e2e8f0; }
+  .nav-link { color: #4a5568; font-size: 13px; text-decoration: none; padding: 6px 12px; border-radius: 6px; }
+  .nav-link:hover { background: #f7fafc; }
+  .nav-link.active { background: #ebf4ff; color: #2b6cb0; font-weight: 500; }
+  .filter-bar { background: white; padding: 12px 32px; display: flex; gap: 16px; align-items: center; border-bottom: 1px solid #e2e8f0; }
+  .filter-bar label { font-size: 13px; color: #718096; font-weight: 500; }
+  .filter-bar select { padding: 6px 12px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 13px; color: #4a5568; background: white; }
+  .container { padding: 24px 32px; max-width: 1400px; }
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .stat-card { background: white; border-radius: 12px; padding: 20px 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .stat-card .label { font-size: 13px; color: #718096; font-weight: 500; margin-bottom: 8px; }
+  .stat-card .value { font-size: 32px; font-weight: 700; }
+  .stat-card .sub { font-size: 12px; color: #a0aec0; margin-top: 4px; }
+  .stat-card.blue { border-top: 4px solid #3182ce; }
+  .stat-card.blue .value { color: #2b6cb0; }
+  .stat-card.green { border-top: 4px solid #38a169; }
+  .stat-card.green .value { color: #276749; }
+  .stat-card.orange { border-top: 4px solid #dd6b20; }
+  .stat-card.orange .value { color: #c05621; }
+  .stat-card.red { border-top: 4px solid #e53e3e; }
+  .stat-card.red .value { color: #c53030; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  .card { background: white; border-radius: 12px; padding: 20px 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .card-title { font-size: 15px; font-weight: 600; color: #2d3748; margin-bottom: 16px; }
+  canvas { max-height: 220px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; padding: 8px 12px; background: #f7fafc; color: #718096; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e2e8f0; }
+  td { padding: 10px 12px; border-bottom: 1px solid #f0f4f8; color: #4a5568; }
+  tr:last-child td { border-bottom: none; }
+  .badge-status { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .badge-status.pending { background: #fefcbf; color: #744210; }
+  .badge-status.approved { background: #c6f6d5; color: #22543d; }
+  .badge-status.red { background: #fed7d7; color: #822727; }
+  .section-title { font-size: 18px; font-weight: 600; color: #2d3748; margin: 24px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e2e8f0; }
+  .empty { text-align: center; padding: 32px; color: #a0aec0; font-size: 14px; }
+  .loading { text-align: center; padding: 32px; color: #a0aec0; }
+  .spinner { display: inline-block; width: 24px; height: 24px; border: 3px solid #e2e8f0; border-top-color: #2b4c8c; border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>📊 Timaflor Manager Dashboard</h1>
+    <div class="subtitle">Health & safety overview for management</div>
+  </div>
+  <div id="current-date" style="font-size:14px;opacity:0.9;text-align:right;"></div>
+</div>
+
+<div class="nav">
+  <a class="nav-link" href="/clinic-dashboard">← Clinic Dashboard</a>
+  <a class="nav-link active" href="/manager-dashboard">Manager Overview</a>
+</div>
+
+<div class="filter-bar">
+  <label>Period:</label>
+  <select id="period-filter" onchange="loadAll()">
+    <option value="month">This Month</option>
+    <option value="quarter">This Quarter</option>
+    <option value="year">This Year</option>
+  </select>
+  <label>Department:</label>
+  <select id="dept-filter" onchange="loadAll()">
+    <option value="">All Departments</option>
+    <option value="Greenhouse">Greenhouse</option>
+    <option value="Packhouse">Packhouse</option>
+    <option value="Workshop">Workshop</option>
+    <option value="Office">Office</option>
+    <option value="Outside">Outside</option>
+    <option value="Other">Other</option>
+  </select>
+</div>
+
+<div class="container">
+
+  <div class="stats-grid">
+    <div class="stat-card blue">
+      <div class="label">Total Patient Visits</div>
+      <div class="value" id="total-visits"><div class="spinner"></div></div>
+      <div class="sub">This period</div>
+    </div>
+    <div class="stat-card orange">
+      <div class="label">Total Sick Off Days</div>
+      <div class="value" id="total-sickoff-days"><div class="spinner"></div></div>
+      <div class="sub">Days approved this period</div>
+    </div>
+    <div class="stat-card red">
+      <div class="label">Work Injuries</div>
+      <div class="value" id="total-injuries"><div class="spinner"></div></div>
+      <div class="sub">Reported this period</div>
+    </div>
+    <div class="stat-card green">
+      <div class="label">External Referrals</div>
+      <div class="value" id="total-referrals"><div class="spinner"></div></div>
+      <div class="sub">Patients referred out</div>
+    </div>
+  </div>
+
+  <div class="section-title">Patient Visits & Sick Off</div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Patient Visits by Department</div>
+      <canvas id="visits-dept-chart"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title">Sick Off: Work Related vs Non-Work Related</div>
+      <canvas id="sickoff-type-chart"></canvas>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Sick Off Days by Department</div>
+      <canvas id="sickoff-dept-chart"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title">Pending Approvals</div>
+      <div id="pending-approvals-list"><div class="loading"><div class="spinner"></div></div></div>
+    </div>
+  </div>
+
+  <div class="section-title">Work Related Injuries</div>
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-title">Injuries by Department</div>
+      <canvas id="injury-dept-chart"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title">Injury Severity</div>
+      <canvas id="injury-severity-chart"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title">Recent Injury Reports</div>
+      <div id="recent-injuries"><div class="loading"><div class="spinner"></div></div></div>
+    </div>
+  </div>
+
+  <div class="section-title">External Referrals</div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Referrals by Type</div>
+      <canvas id="referral-type-chart"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title">Referrals by Facility</div>
+      <div id="referrals-by-facility"><div class="loading"><div class="spinner"></div></div></div>
+    </div>
+  </div>
+
+  <div class="section-title">Common Diagnoses</div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Top Diagnoses This Period</div>
+      <div id="top-diagnoses"><div class="loading"><div class="spinner"></div></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Clinical Procedures Performed</div>
+      <canvas id="procedures-chart"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const now = new Date();
+document.getElementById('current-date').textContent = now.toLocaleDateString('en-GB', {
+  weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+});
+
+const API = '/api/resource';
+const COLORS = ['#3182ce','#38a169','#dd6b20','#805ad5','#e53e3e','#00b5d8','#d69e2e'];
+const chartInstances = {};
+
+function getDateRange() {
+  const period = document.getElementById('period-filter').value;
+  const n = new Date();
+  let start;
+  if (period === 'month') start = new Date(n.getFullYear(), n.getMonth(), 1);
+  else if (period === 'quarter') { const q = Math.floor(n.getMonth()/3); start = new Date(n.getFullYear(), q*3, 1); }
+  else start = new Date(n.getFullYear(), 0, 1);
+  return start.toISOString().split('T')[0];
+}
+
+async function fetchList(doctype, filters, fields, limit) {
+  const f = encodeURIComponent(JSON.stringify(filters || []));
+  const fld = encodeURIComponent(JSON.stringify(fields || ['name']));
+  const url = `${API}/${encodeURIComponent(doctype)}?filters=${f}&fields=${fld}&limit_page_length=${limit||500}&order_by=creation desc`;
+  const res = await fetch(url, { headers: { 'X-Frappe-CSRF-Token': frappe.csrf_token } });
+  const data = await res.json();
+  return data.data || [];
+}
+
+function countBy(arr, key) {
+  const counts = {};
+  arr.forEach(d => { const v = d[key] || 'Unknown'; counts[v] = (counts[v]||0)+1; });
+  return counts;
+}
+
+function makeBarChart(id, labels, values, color) {
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  if (chartInstances[id]) chartInstances[id].destroy();
+  chartInstances[id] = new Chart(ctx, {
+    type: 'bar',
+    data: { labels, datasets: [{ data: values, backgroundColor: color || COLORS, borderRadius: 6 }] },
+    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+  });
+}
+
+function makePieChart(id, labels, values) {
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  if (chartInstances[id]) chartInstances[id].destroy();
+  chartInstances[id] = new Chart(ctx, {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data: values, backgroundColor: COLORS.slice(0,labels.length), borderWidth: 2 }] },
+    options: { responsive: true, plugins: { legend: { position: 'right', labels: { font: { size: 11 } } } } }
+  });
+}
+
+async function loadAll() {
+  const startDate = getDateRange();
+  const dept = document.getElementById('dept-filter').value;
+  const baseFilters = dept ? [['date','>=',startDate],['department','=',dept]] : [['date','>=',startDate]];
+
+  try {
+    const visits = await fetchList('Timaflor Patient Encounter', baseFilters, ['name'], 500);
+    document.getElementById('total-visits').textContent = visits.length;
+
+    const sickoffs = await fetchList('Sick Off Application',
+      dept ? [['creation','>=',startDate],['department','=',dept]] : [['creation','>=',startDate]],
+      ['sick_off_days_approved'], 500);
+    document.getElementById('total-sickoff-days').textContent = sickoffs.reduce((s,d) => s+(d.sick_off_days_approved||0), 0);
+
+    const injuries = await fetchList('Accident Injury Report',
+      dept ? [['date_of_accident','>=',startDate],['department','=',dept]] : [['date_of_accident','>=',startDate]],
+      ['name'], 500);
+    document.getElementById('total-injuries').textContent = injuries.length;
+
+    const referrals = await fetchList('External Referral',
+      dept ? [['date_of_referral','>=',startDate],['department','=',dept]] : [['date_of_referral','>=',startDate]],
+      ['name'], 500);
+    document.getElementById('total-referrals').textContent = referrals.length;
+  } catch(e) { console.error(e); }
+
+  try {
+    const visits = await fetchList('Timaflor Patient Encounter', baseFilters, ['department'], 500);
+    const c = countBy(visits, 'department');
+    makeBarChart('visits-dept-chart', Object.keys(c), Object.values(c));
+  } catch(e) {}
+
+  try {
+    const sickoffs = await fetchList('Sick Off Application',
+      dept ? [['creation','>=',startDate],['department','=',dept]] : [['creation','>=',startDate]],
+      ['classification'], 500);
+    const c = countBy(sickoffs, 'classification');
+    makePieChart('sickoff-type-chart', Object.keys(c), Object.values(c));
+  } catch(e) {}
+
+  try {
+    const sickoffs = await fetchList('Sick Off Application',
+      dept ? [['creation','>=',startDate],['department','=',dept]] : [['creation','>=',startDate]],
+      ['department','sick_off_days_approved'], 500);
+    const deptDays = {};
+    sickoffs.forEach(s => { deptDays[s.department||'Unknown'] = (deptDays[s.department||'Unknown']||0)+(s.sick_off_days_approved||0); });
+    makeBarChart('sickoff-dept-chart', Object.keys(deptDays), Object.values(deptDays), '#dd6b20');
+  } catch(e) {}
+
+  try {
+    const pending = await fetchList('Sick Off Application',
+      [['workflow_state','in',['Pending HR Review','Pending HOD Approval','Pending FM/GM Approval']]],
+      ['name','patient','department','workflow_state','sick_off_days_approved'], 10);
+    if (!pending.length) { document.getElementById('pending-approvals-list').innerHTML = '<div class="empty">No pending approvals</div>'; }
+    else {
+      let html = '<table><thead><tr><th>Patient</th><th>Dept</th><th>Days</th><th>Stage</th></tr></thead><tbody>';
+      pending.forEach(d => {
+        html += `<tr><td><a href="/app/sick-off-application/${d.name}">${d.patient||'-'}</a></td><td>${d.department||'-'}</td><td>${d.sick_off_days_approved||'-'}</td><td><span class="badge-status pending">${(d.workflow_state||'').replace('Pending ','')}</span></td></tr>`;
+      });
+      html += '</tbody></table>';
+      document.getElementById('pending-approvals-list').innerHTML = html;
+    }
+  } catch(e) {}
+
+  try {
+    const injuries = await fetchList('Accident Injury Report',
+      dept ? [['date_of_accident','>=',startDate],['department','=',dept]] : [['date_of_accident','>=',startDate]],
+      ['department','nature_of_accident'], 500);
+    const dc = countBy(injuries, 'department');
+    makeBarChart('injury-dept-chart', Object.keys(dc), Object.values(dc), '#e53e3e');
+    const sc = countBy(injuries, 'nature_of_accident');
+    makePieChart('injury-severity-chart', Object.keys(sc), Object.values(sc));
+  } catch(e) {}
+
+  try {
+    const injuries = await fetchList('Accident Injury Report',
+      dept ? [['date_of_accident','>=',startDate],['department','=',dept]] : [['date_of_accident','>=',startDate]],
+      ['name','patient','department','nature_of_accident','date_of_accident'], 8);
+    if (!injuries.length) { document.getElementById('recent-injuries').innerHTML = '<div class="empty">No injuries reported</div>'; }
+    else {
+      let html = '<table><thead><tr><th>Patient</th><th>Dept</th><th>Severity</th><th>Date</th></tr></thead><tbody>';
+      injuries.forEach(d => {
+        const cls = d.nature_of_accident==='Fatal'?'red':d.nature_of_accident==='Disabling'?'pending':'approved';
+        html += `<tr><td><a href="/app/accident-injury-report/${d.name}">${d.patient||'-'}</a></td><td>${d.department||'-'}</td><td><span class="badge-status ${cls}">${d.nature_of_accident||'-'}</span></td><td>${d.date_of_accident||'-'}</td></tr>`;
+      });
+      html += '</tbody></table>';
+      document.getElementById('recent-injuries').innerHTML = html;
+    }
+  } catch(e) {}
+
+  try {
+    const referrals = await fetchList('External Referral',
+      dept ? [['date_of_referral','>=',startDate],['department','=',dept]] : [['date_of_referral','>=',startDate]],
+      ['referral_type','facility_referred_to'], 500);
+    const tc = countBy(referrals, 'referral_type');
+    makePieChart('referral-type-chart', Object.keys(tc), Object.values(tc));
+    const fc = countBy(referrals, 'facility_referred_to');
+    const sorted = Object.entries(fc).sort((a,b)=>b[1]-a[1]).slice(0,8);
+    if (!sorted.length) { document.getElementById('referrals-by-facility').innerHTML = '<div class="empty">No referrals found</div>'; }
+    else {
+      let html = '<table><thead><tr><th>Facility</th><th>Referrals</th></tr></thead><tbody>';
+      sorted.forEach(([f,c]) => { html += `<tr><td>${f}</td><td>${c} <span style="color:#a0aec0;font-size:11px;">(${Math.round(c/referrals.length*100)}%)</span></td></tr>`; });
+      html += '</tbody></table>';
+      document.getElementById('referrals-by-facility').innerHTML = html;
+    }
+  } catch(e) {}
+
+  try {
+    const encounters = await fetchList('Timaflor Patient Encounter', baseFilters, ['diagnosis'], 500);
+    const dc = {};
+    encounters.forEach(e => { if(e.diagnosis){ const d=e.diagnosis.trim().substring(0,40); dc[d]=(dc[d]||0)+1; } });
+    const sorted = Object.entries(dc).sort((a,b)=>b[1]-a[1]).slice(0,8);
+    if (!sorted.length) { document.getElementById('top-diagnoses').innerHTML = '<div class="empty">No diagnoses recorded</div>'; }
+    else {
+      let html = '<table><thead><tr><th>Diagnosis</th><th>Count</th></tr></thead><tbody>';
+      sorted.forEach(([d,c]) => { html += `<tr><td>${d}</td><td>${c} <span style="color:#a0aec0;font-size:11px;">(${Math.round(c/encounters.length*100)}%)</span></td></tr>`; });
+      html += '</tbody></table>';
+      document.getElementById('top-diagnoses').innerHTML = html;
+    }
+  } catch(e) {}
+
+  try {
+    const encounters = await fetchList('Timaflor Patient Encounter', baseFilters, ['procedure_performed'], 500);
+    const pc = {};
+    encounters.forEach(e => { if(e.procedure_performed && e.procedure_performed!=='None') { pc[e.procedure_performed]=(pc[e.procedure_performed]||0)+1; } });
+    if (Object.keys(pc).length) makeBarChart('procedures-chart', Object.keys(pc), Object.values(pc), '#805ad5');
+  } catch(e) {}
+}
+
+loadAll();
+</script>
+</body>
+</html>
