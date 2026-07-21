@@ -1,0 +1,266 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:AIR-.YYYY.-",
+ "creation": "2026-07-21 11:32:22.296400",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "section_break_ulur",
+  "amended_from",
+  "patient",
+  "employee_number",
+  "age",
+  "gender",
+  "id_number",
+  "sb_accident_details",
+  "date_of_accident",
+  "time_of_accident",
+  "nature_of_employment",
+  "department",
+  "location_of_accident",
+  "nature_of_job",
+  "was_doing_authorised_job",
+  "how_accident_occurred",
+  "cause_of_accident",
+  "body_part_injured",
+  "nature_of_accident",
+  "sb_action_taken",
+  "action_taken_by_supervisor",
+  "recorded_in_register",
+  "sb_witnesses",
+  "witnesses",
+  "sb_medical_assessment",
+  "supervisor_name",
+  "doctor_comments",
+  "sick_off_days_given",
+  "sb_management",
+  "manager_comments",
+  "hr_action"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_ulur",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Accident Injury Report",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "AIR-.YYYY.-"
+  },
+  {
+   "fieldname": "patient",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Patient",
+   "options": "Timaflor Patient",
+   "reqd": 1
+  },
+  {
+   "fieldname": "employee_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Employee Number",
+   "reqd": 1
+  },
+  {
+   "fieldname": "age",
+   "fieldtype": "Int",
+   "label": "Age"
+  },
+  {
+   "fieldname": "gender",
+   "fieldtype": "Select",
+   "label": "Gender",
+   "options": "Male\nFemale"
+  },
+  {
+   "fieldname": "id_number",
+   "fieldtype": "Data",
+   "label": "ID Number"
+  },
+  {
+   "fieldname": "sb_accident_details",
+   "fieldtype": "Section Break",
+   "label": "Accident Details",
+   "options": "Accident Details"
+  },
+  {
+   "fieldname": "date_of_accident",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Date of Accident",
+   "reqd": 1
+  },
+  {
+   "fieldname": "time_of_accident",
+   "fieldtype": "Time",
+   "label": "Time of Accident"
+  },
+  {
+   "fieldname": "nature_of_employment",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Nature Of Employment",
+   "options": "Permanent\nSeasonal\nCasual\nContractor\nOther",
+   "reqd": 1
+  },
+  {
+   "fieldname": "department",
+   "fieldtype": "Select",
+   "label": "Department",
+   "options": "Greenhouse\nPackhouse\nWorkshop\nOffice\nOutside\nOther",
+   "reqd": 1
+  },
+  {
+   "fieldname": "location_of_accident",
+   "fieldtype": "Data",
+   "label": "Location Of Accident",
+   "reqd": 1
+  },
+  {
+   "fieldname": "nature_of_job",
+   "fieldtype": "Data",
+   "label": "Nature of Job"
+  },
+  {
+   "fieldname": "was_doing_authorised_job",
+   "fieldtype": "Select",
+   "label": "Was Doing Authorized Job",
+   "options": "Yes\nNo"
+  },
+  {
+   "fieldname": "how_accident_occurred",
+   "fieldtype": "Small Text",
+   "label": "How Accident Occured",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cause_of_accident",
+   "fieldtype": "Data",
+   "label": "Cause Of Accident",
+   "reqd": 1
+  },
+  {
+   "fieldname": "body_part_injured",
+   "fieldtype": "Data",
+   "label": "Body Part Injured",
+   "reqd": 1
+  },
+  {
+   "fieldname": "nature_of_accident",
+   "fieldtype": "Select",
+   "label": "Nature Of Accident",
+   "options": "Minor\nDisabling\nFatal",
+   "reqd": 1
+  },
+  {
+   "fieldname": "sb_action_taken",
+   "fieldtype": "Section Break",
+   "label": "Action Taken",
+   "options": "Action Taken"
+  },
+  {
+   "fieldname": "action_taken_by_supervisor",
+   "fieldtype": "Small Text",
+   "label": "\tAction Taken by Supervisor"
+  },
+  {
+   "fieldname": "recorded_in_register",
+   "fieldtype": "Select",
+   "label": "Recorded in Register",
+   "options": "Yes\nNo"
+  },
+  {
+   "fieldname": "sb_witnesses",
+   "fieldtype": "Section Break",
+   "label": "Witnesses",
+   "options": "Witnesses"
+  },
+  {
+   "fieldname": "witnesses",
+   "fieldtype": "Table",
+   "label": "Witnesses",
+   "options": "Accident Witness"
+  },
+  {
+   "fieldname": "sb_medical_assessment",
+   "fieldtype": "Section Break",
+   "label": "Medical Assessment",
+   "options": "Medical Assessment"
+  },
+  {
+   "fieldname": "supervisor_name",
+   "fieldtype": "Data",
+   "label": "Supervisor Name"
+  },
+  {
+   "fieldname": "doctor_comments",
+   "fieldtype": "Small Text",
+   "label": "Doctor Comments"
+  },
+  {
+   "fieldname": "sick_off_days_given",
+   "fieldtype": "Int",
+   "label": "Sick Off Days Given"
+  },
+  {
+   "fieldname": "sb_management",
+   "fieldtype": "Section Break",
+   "label": "Management",
+   "options": "Management"
+  },
+  {
+   "fieldname": "manager_comments",
+   "fieldtype": "Small Text",
+   "label": "Manager Comments"
+  },
+  {
+   "fieldname": "hr_action",
+   "fieldtype": "Small Text",
+   "label": "HR Action"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-07-21 11:56:23.121157",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Accident Injury Report",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

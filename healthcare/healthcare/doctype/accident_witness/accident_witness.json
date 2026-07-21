@@ -1,0 +1,48 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-07-21 11:52:07.516946",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_dgkd",
+  "witness_name",
+  "id_number"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_dgkd",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "witness_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Witness Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "id_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "ID Number",
+   "reqd": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-07-21 11:52:54.432330",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Accident Witness",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
