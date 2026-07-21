@@ -1,0 +1,142 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:FAR-.YYYY.-",
+ "creation": "2026-07-21 12:13:36.720148",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "section_break_6zhi",
+  "amended_from",
+  "month",
+  "year",
+  "farm_location",
+  "first_aider_name",
+  "sb_entries",
+  "entries",
+  "sb_summary",
+  "total_cases",
+  "submitted_by",
+  "submission_date",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_6zhi",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "First Aid Field Register",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "FAR-.YYYY.-"
+  },
+  {
+   "fieldname": "month",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Month",
+   "options": "January, February, March, April, May, June, July, August, September, October, November, December",
+   "reqd": 1
+  },
+  {
+   "fieldname": "year",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Year",
+   "reqd": 1
+  },
+  {
+   "fieldname": "farm_location",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Farm Location",
+   "options": "Greenhouse, Packhouse, Workshop, Office, Outside, Other",
+   "reqd": 1
+  },
+  {
+   "fieldname": "first_aider_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "First Aider Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "sb_entries",
+   "fieldtype": "Section Break",
+   "label": "Treatment Entries"
+  },
+  {
+   "fieldname": "entries",
+   "fieldtype": "Table",
+   "label": "Entries",
+   "options": "First Aid Entry"
+  },
+  {
+   "fieldname": "sb_summary",
+   "fieldtype": "Section Break",
+   "label": "Summary"
+  },
+  {
+   "fieldname": "total_cases",
+   "fieldtype": "Int",
+   "label": "Total Cases"
+  },
+  {
+   "fieldname": "submitted_by",
+   "fieldtype": "Data",
+   "label": "Submitted By"
+  },
+  {
+   "fieldname": "submission_date",
+   "fieldtype": "Date",
+   "label": "Submission Date"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-07-21 12:22:37.165034",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "First Aid Field Register",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
