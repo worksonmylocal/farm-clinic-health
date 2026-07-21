@@ -79,7 +79,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Department",
-   "options": "Greenhouse, Packhouse, Workshop, Office, Outside, Other",
+   "options": "Greenhouse\nPackhouse\nWorkshop\nOffice\nOutside\nOther",
    "reqd": 1
   },
   {
@@ -138,7 +138,7 @@
    "fieldname": "procedure_performed",
    "fieldtype": "Select",
    "label": "Procedure Performed",
-   "options": "None, Dressing of Wounds, Suturing, Stitching, Incision and Drainage, Emergency"
+   "options": "None\nDressing of Wounds\nSuturing\nStitching\nIncision and Drainage\nEmergency"
   },
   {
    "fieldname": "procedure_notes",
@@ -154,13 +154,13 @@
    "fieldname": "routine_check",
    "fieldtype": "Select",
    "label": "Routine Check",
-   "options": "None, Pregnancy Test"
+   "options": "None\nPregnancy Test"
   },
   {
    "fieldname": "routine_check_result",
    "fieldtype": "Select",
    "label": "Routine Check Result",
-   "options": "None, Positive, Negative"
+   "options": "None\nPositive\nNegative"
   },
   {
    "fieldname": "sb_peme",
@@ -225,7 +225,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-07-21 12:42:28.596845",
+ "modified": "2026-07-21 14:38:19.029932",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Timaflor Patient Encounter",

@@ -21,6 +21,7 @@ fixtures = [
     "Workflow Action Master",
     "Custom DocPerm",
     "Server Script",
+    "Client Script",
     "Observation Template",
     "Notification",
     {
@@ -29,7 +30,16 @@ fixtures = [
             "Occupational Exposure Log",
             "Work Related Injury Form",
             "Referral Tracking",
-            "Wellness Program Tracker"
+            "Wellness Program Tracker",
+            "Timaflor Patient",
+            "Timaflor Patient Encounter",
+            "Timaflor Medication",
+            "Sick Off Application",
+            "Accident Injury Report",
+            "Accident Witness",
+            "External Referral",
+            "First Aid Field Register",
+            "First Aid Entry"
         ]]]
     },
 ]

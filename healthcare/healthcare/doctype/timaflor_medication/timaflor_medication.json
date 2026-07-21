@@ -39,7 +39,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Frequency",
-   "options": "Once Daily, Twice Daily, Three Times Daily, Four Times Daily, As Needed",
+   "options": "Once Daily\nTwice Daily\nThree Times Daily\nFour Times Daily\nAs Needed",
    "reqd": 1
   },
   {
@@ -64,7 +64,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-07-21 12:27:43.408368",
+ "modified": "2026-07-21 14:38:50.346818",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Timaflor Medication",

@@ -1,0 +1,57 @@
+[
+ {
+  "docstatus": 0,
+  "doctype": "Client Script",
+  "dt": "Sick Off Application",
+  "enabled": 1,
+  "modified": "2026-07-21 10:54:46.497060",
+  "module": null,
+  "name": "Sick Off Application - Calculate Balance",
+  "script": "frappe.ui.form.on('Sick Off Application', {\n    patient: function(frm) {\n        if (frm.doc.patient) {\n            frappe.db.get_doc('Timaflor Patient', frm.doc.patient)\n            .then(doc => {\n                frm.set_value('employee_number', doc.employee_number);\n                frm.set_value('department', doc.department);\n            });\n        }\n    },\n    total_sick_off_days_due: function(frm) {\n        calculate_balance(frm);\n    },\n    sick_off_days_taken_to_date: function(frm) {\n        calculate_balance(frm);\n    },\n    sick_off_days_approved: function(frm) {\n        calculate_balance(frm);\n    }\n});\n\nfunction calculate_balance(frm) {\n    let total = frm.doc.total_sick_off_days_due || 0;\n    let taken = frm.doc.sick_off_days_taken_to_date || 0;\n    let approved = frm.doc.sick_off_days_approved || 0;\n    \n    frm.set_value('sick_off_days_balance', total - taken - approved);\n}",
+  "view": "Form"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Client Script",
+  "dt": "Accident Injury Report",
+  "enabled": 1,
+  "modified": "2026-07-21 11:54:16.173748",
+  "module": null,
+  "name": "Accident Injury Report - Auto Fetch Patient",
+  "script": "frappe.ui.form.on('Accident Injury Report', {\n    patient: function(frm) {\n        if (frm.doc.patient) {\n            frappe.db.get_doc('Timaflor Patient', frm.doc.patient)\n            .then(doc => {\n                frm.set_value('employee_number', doc.employee_number);\n                frm.set_value('department', doc.department);\n                frm.set_value('age', doc.age);\n                frm.set_value('gender', doc.gender);\n            });\n        }\n    }\n});",
+  "view": "Form"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Client Script",
+  "dt": "External Referral",
+  "enabled": 1,
+  "modified": "2026-07-21 12:10:37.891686",
+  "module": null,
+  "name": "External Referral - Auto Fetch Patient",
+  "script": "frappe.ui.form.on('External Referral', {\n    patient: function(frm) {\n        if (frm.doc.patient) {\n            frappe.db.get_doc('Timaflor Patient', frm.doc.patient)\n            .then(doc => {\n                frm.set_value('employee_number', doc.employee_number);\n                frm.set_value('department', doc.department);\n            });\n        }\n    }\n});",
+  "view": "Form"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Client Script",
+  "dt": "First Aid Field Register",
+  "enabled": 1,
+  "modified": "2026-07-21 12:23:14.468084",
+  "module": null,
+  "name": "First Aid Field Register - Calculate Total",
+  "script": "frappe.ui.form.on('First Aid Entry', {\n    entries_add: function(frm) {\n        calculate_total(frm);\n    },\n    entries_remove: function(frm) {\n        calculate_total(frm);\n    }\n});\n\nfunction calculate_total(frm) {\n    frm.set_value('total_cases', frm.doc.entries ? frm.doc.entries.length : 0);\n}",
+  "view": "Form"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Client Script",
+  "dt": "Timaflor Patient Encounter",
+  "enabled": 1,
+  "modified": "2026-07-21 17:52:33.532185",
+  "module": null,
+  "name": "Timaflor Patient Encounter - Auto Fetch Patient",
+  "script": "frappe.ui.form.on('Timaflor Patient Encounter', {\n    refresh: function(frm) {\n        frm.set_query('patient', function() {\n            return {\n                query: 'healthcare.farm_clinic_hooks.search_timaflor_patient'\n            };\n        });\n    },\n\n    patient: function(frm) {\n        if (!frm.doc.patient) {\n            frm.set_intro('');\n            frm.set_value('employee_number', '');\n            frm.set_value('department', '');\n            return;\n        }\n        setTimeout(function() {\n            frappe.db.get_doc('Timaflor Patient', frm.doc.patient)\n            .then(doc => {\n                frm.set_value('employee_number', doc.employee_number);\n                frm.set_value('department', doc.department);\n                frm.set_intro(\n                    `<b>👤 ${doc.full_name}</b> &nbsp;|&nbsp; \n                     🪪 ${doc.employee_number || 'No Employee No'} &nbsp;|&nbsp; \n                     🏭 ${doc.department || 'No Department'} &nbsp;|&nbsp;\n                     ⚧ ${doc.gender || '-'} &nbsp;|&nbsp;\n                     🎂 Age: ${doc.age || '-'}`,\n                    'blue'\n                );\n            });\n        }, 500);\n    },\n\n    referral_required: function(frm) {\n        if (frm.doc.referral_required) {\n            frappe.msgprint({\n                title: 'Referral Required',\n                message: 'Please remember to create an External Referral document for this patient.',\n                indicator: 'orange'\n            });\n        }\n    },\n\n    sick_off_required: function(frm) {\n        if (frm.doc.sick_off_required) {\n            frappe.msgprint({\n                title: 'Sick Off Required',\n                message: 'Please remember to create a Sick Off Application for this patient.',\n                indicator: 'blue'\n            });\n        }\n    }\n});",
+  "view": "Form"
+ }
+]

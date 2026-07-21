@@ -47,7 +47,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Month",
-   "options": "January, February, March, April, May, June, July, August, September, October, November, December",
+   "options": "January\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember",
    "reqd": 1
   },
   {
@@ -62,7 +62,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Farm Location",
-   "options": "Greenhouse, Packhouse, Workshop, Office, Outside, Other",
+   "options": "Greenhouse\nPackhouse\nWorkshop\nOffice\nOutside\nOther",
    "reqd": 1
   },
   {
@@ -113,7 +113,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-07-21 12:22:37.165034",
+ "modified": "2026-07-21 14:40:17.282501",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "First Aid Field Register",

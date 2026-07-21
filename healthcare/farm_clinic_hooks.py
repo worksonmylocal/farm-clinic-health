@@ -75,3 +75,16 @@ def auto_create_leave_application(doc, method):
             f"Could not create Leave Application: {str(e)}",
             alert=True
         )
+
+@frappe.whitelist()
+def search_timaflor_patient(doctype="", txt="", searchfield="", start=0, page_len=20, filters=None, **kwargs):
+    txt = f"%{txt}%"
+    return frappe.db.sql("""
+        SELECT name, full_name, employee_number, department
+        FROM `tabTimaflor Patient`
+        WHERE full_name LIKE %s
+        OR employee_number LIKE %s
+        OR name LIKE %s
+        ORDER BY full_name
+        LIMIT %s OFFSET %s
+    """, (txt, txt, txt, int(page_len), int(start)))
