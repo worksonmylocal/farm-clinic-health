@@ -11,6 +11,42 @@
  {
   "docstatus": 0,
   "doctype": "Workflow State",
+  "icon": "",
+  "modified": "2026-07-21 10:58:27.954469",
+  "name": "Pending HR Review",
+  "style": "",
+  "workflow_state_name": "Pending HR Review"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "",
+  "modified": "2026-07-21 10:58:40.877683",
+  "name": "Pending HOD Approval",
+  "style": "",
+  "workflow_state_name": "Pending HOD Approval"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "",
+  "modified": "2026-07-21 10:58:56.198537",
+  "name": "Pending FM/GM Approval",
+  "style": "",
+  "workflow_state_name": "Pending FM/GM Approval"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "",
+  "modified": "2026-07-21 11:07:18.425912",
+  "name": "Submit For Review",
+  "style": "",
+  "workflow_state_name": "Submit For Review"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
   "icon": "ok-sign",
   "modified": "2026-06-17 11:01:30.570223",
   "name": "Approved",

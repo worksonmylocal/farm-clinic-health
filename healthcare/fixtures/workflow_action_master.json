@@ -58,6 +58,20 @@
  {
   "docstatus": 0,
   "doctype": "Workflow Action Master",
+  "modified": "2026-07-21 10:59:25.530249",
+  "name": "Submit for Review",
+  "workflow_action_name": "Submit for Review"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow Action Master",
+  "modified": "2026-07-21 10:59:36.810860",
+  "name": "Return To Doctor",
+  "workflow_action_name": "Return To Doctor"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow Action Master",
   "modified": "2026-06-17 12:36:16.817643",
   "name": "Close Encounter",
   "workflow_action_name": "Close Encounter"
